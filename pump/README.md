@@ -14,6 +14,9 @@ scirodev run ble demo.py        # runs a script on the hub over Bluetooth
 ## Files
 
 - `demo.py` — Raw RGBC, HSV and the nearest colour; RIGHT cycles the LED
+- `calibration_demo.py` — Range calibration on the sensor: RIGHT starts / stops
+  (sweep over the darkest and brightest surfaces meanwhile), LEFT clears
+- `qc.py` — Prints the stored calibration table and whether it applies
 
 ## API in one look
 
@@ -31,8 +34,21 @@ color.set_light(25)                         # illumination LED, percent
 color.set_gain(4)                           # 1, 4, 16 or 64
 color.set_integration(0xFD)                 # TCS3400 ATIME: (256 - atime) * 2.78 ms
 print(color.settings())                     # (led %, gain, atime) in effect
+
+color.calibrate(True)                       # sweep dark .. bright, then:
+color.calibrate(False)                      # stored on the sensor, bound to the settings
+print(color.calibration_status())           # "none" | "weak" | "ok" | "calibrating"
+r8, g8, b8 = color.calibrated()             # what the sensor's own display shows
+mins, maxs, profile, valid, ok, mask = color.calibration()
+color.clear_calibration()
 ```
 
-Every reading method also works with `await` under `run_task` / `multitask`.
+`hsv()` and `color()` use the calibrated colour whenever a valid calibration
+applies to the current settings, so a calibrated white really is
+`Color.WHITE`. Changing the LED, gain or integration time makes the stored
+calibration "weak" (not applied) until you calibrate again under those settings.
+
+Every reading method, `calibration_status()` included, also works with `await`
+under `run_task` / `multitask`; `settings()` and `state()` are plain values.
 A reading taken after a settings change waits for the first sample measured
 with the new settings.
