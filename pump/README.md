@@ -25,22 +25,22 @@ from pybricks.parameters import Color
 from sciro.parameters import ExtPort, Port
 from sciro.pump import ColorSensor
 
-color = ColorSensor(Port.A, ExtPort.EXT1)   # or FloorPro(Port.A).color_sensor(1)
-r, g, b, c, status = color.read()           # raw 16-bit counts at device resolution
-hsv = color.hsv()                           # Color(h 0..359, s 0..100, v 0..100)
-nearest = color.color()                     # e.g. Color.RED
-color.detectable_colors((Color.RED, Color.BLUE, Color.NONE))
-color.set_light(25)                         # illumination LED, percent
-color.set_gain(4)                           # 1, 4, 16 or 64
-color.set_integration(0xFD)                 # TCS3400 ATIME: (256 - atime) * 2.78 ms
-print(color.settings())                     # (led %, gain, atime) in effect
+color_sensor = ColorSensor(Port.A, ExtPort.EXT1)   # or FloorPro(Port.A).color_sensor(1)
+r, g, b, c, status = color_sensor.read()           # raw 16-bit counts at device resolution
+hsv = color_sensor.hsv()                           # Color(h 0..359, s 0..100, v 0..100)
+nearest = color_sensor.color()                     # e.g. Color.RED
+color_sensor.detectable_colors((Color.RED, Color.BLUE, Color.NONE))
+color_sensor.set_light(25)                         # illumination LED, percent
+color_sensor.set_gain(4)                           # 1, 4, 16 or 64
+color_sensor.set_integration(0xFD)                 # TCS3400 ATIME: (256 - atime) * 2.78 ms
+print(color_sensor.settings())                     # (led %, gain, atime) in effect
 
-color.calibrate(True)                       # sweep dark .. bright, then:
-color.calibrate(False)                      # stored on the sensor, bound to the settings
-print(color.calibration_status())           # "none" | "weak" | "ok" | "calibrating"
-r8, g8, b8 = color.calibrated()             # what the sensor's own display shows
-mins, maxs, profile, valid, ok, mask = color.calibration()
-color.clear_calibration()
+color_sensor.calibrate(True)                       # sweep dark .. bright, then:
+color_sensor.calibrate(False)                      # stored on the sensor, bound to the settings
+print(color_sensor.calibration_status())           # "none" | "weak" | "ok" | "calibrating"
+r8, g8, b8 = color_sensor.calibrated()             # what the sensor's own display shows
+mins, maxs, profile, valid, ok, mask = color_sensor.calibration()
+color_sensor.clear_calibration()
 ```
 
 `hsv()` and `color()` use the calibrated colour whenever a valid calibration
