@@ -14,10 +14,10 @@ Product information, documentation and firmware downloads: **https://sciro.ch**
 | LEGO Prime / Inventor hub with Pybricks | LUMP (LEGO UART sensor protocol) | [`lump/`](lump/) |
 | PeakHub | PUMP (Power UART Multiplex Protocol) | [`pump/`](pump/) |
 
-Over LUMP the colour rides inside the FloorPro's sensor message as 8-bit red,
+Over LUMP the color rides inside the FloorPro's sensor message as 8-bit red,
 green, blue plus the LED level; over PUMP it is a stream of its own with the
 raw 16-bit readings and adjustable gain and integration time. Both folders
-show the colour as hue / saturation / value and as the nearest named colour,
+show the color as hue / saturation / value and as the nearest named color,
 the way `pybricks.pupdevices.ColorSensor` does.
 
 ## Requirements

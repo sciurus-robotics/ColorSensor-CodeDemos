@@ -1,6 +1,6 @@
 # ColorSensor on the PeakHub (PUMP)
 
-Demos for the colour sensor on an extension port of a PUMP device (today: the
+Demos for the color sensor on an extension port of a PUMP device (today: the
 FloorPro) connected to a PeakHub. The `sciro.pump.ColorSensor` class is built
 into the PeakHub firmware; no driver file is needed next to the scripts.
 
@@ -13,7 +13,7 @@ scirodev run ble demo.py        # runs a script on the hub over Bluetooth
 
 ## Files
 
-- `demo.py` — Raw RGBC, HSV and the nearest colour; RIGHT cycles the LED
+- `demo.py` — Raw RGBC, HSV and the nearest color; RIGHT cycles the LED
 - `calibration_demo.py` — Range calibration on the sensor: RIGHT starts / stops
   (sweep over the darkest and brightest surfaces meanwhile), LEFT clears
 - `qc.py` — Prints the stored calibration table and whether it applies
@@ -43,7 +43,7 @@ mins, maxs, profile, valid, ok, mask = color_sensor.calibration()
 color_sensor.clear_calibration()
 ```
 
-`hsv()` and `color()` use the calibrated colour whenever a valid calibration
+`hsv()` and `color()` use the calibrated color whenever a valid calibration
 applies to the current settings, so a calibrated white really is
 `Color.WHITE`. Changing the LED, gain or integration time makes the stored
 calibration "weak" (not applied) until you calibrate again under those settings.

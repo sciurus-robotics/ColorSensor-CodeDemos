@@ -1,9 +1,9 @@
 # ColorSensor on LEGO hubs (Pybricks, LUMP)
 
-Driver and demo for the colour sensor plugged into an extension port of a
+Driver and demo for the color sensor plugged into an extension port of a
 FloorPro that is connected to a LEGO Prime / Inventor hub running
 [Pybricks](https://pybricks.com). The FloorPro speaks LEGO's UART sensor
-protocol (LUMP) there and reports the colour inside its own sensor message,
+protocol (LUMP) there and reports the color inside its own sensor message,
 which `color_sensor.py` decodes through `pybricks.iodevices.PUPDevice`.
 
 ## Files
@@ -13,7 +13,7 @@ which `color_sensor.py` decodes through `pybricks.iodevices.PUPDevice`.
   `error()`. Self-contained; the FloorPro line-sensor driver is not needed (see
   [FloorPro-CodeDemos](https://github.com/sciurus-robotics/FloorPro-CodeDemos)
   for that).
-- `demo.py` — Prints RGB, HSV and the nearest colour; RIGHT cycles the LED
+- `demo.py` — Prints RGB, HSV and the nearest color; RIGHT cycles the LED
 
 Run with [`pybricksdev`](https://github.com/pybricks/pybricksdev), e.g.
 `pybricksdev run ble demo.py` from this folder (the driver module must sit next
@@ -25,4 +25,4 @@ to the script).
   gain and integration time, plus the LED level. Raw 16-bit readings and the
   gain / integration settings are available over PUMP only.
 - `hsv()` returns a `pybricks.parameters.Color`; `color()` picks the nearest of
-  the detectable colours with the same matcher as `pybricks.pupdevices.ColorSensor`.
+  the detectable colors with the same matcher as `pybricks.pupdevices.ColorSensor`.

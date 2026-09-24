@@ -1,6 +1,6 @@
-"""Quality check of the colour sensor's stored calibration.
+"""Quality check of the color sensor's stored calibration.
 
-Run: scirodev run ble qc.py   (FloorPro on Port.A, colour sensor on EXT1)
+Run: scirodev run ble qc.py   (FloorPro on Port.A, color sensor on EXT1)
 
 Prints the stored calibration table (minimum and maximum raw count per channel,
 the settings profile it was taken under, whether it is complete and applies to

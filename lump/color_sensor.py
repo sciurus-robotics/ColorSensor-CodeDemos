@@ -3,9 +3,9 @@ Pybricks).
 
 Over LUMP the FloorPro reports its extension ports inside its mode-0 message:
 one 5-byte pack per port (bytes 6..10 for EXT1, 11..15 for EXT2), each
-``[data:4][status:1]``. For the colour sensor the data bytes are red, green,
+``[data:4][status:1]``. For the color sensor the data bytes are red, green,
 blue scaled to 8 bit and the illumination LED level in percent; the status byte
-carries the sensor type in bits 0-1 (1 = colour sensor), "saturated" in bit 2,
+carries the sensor type in bits 0-1 (1 = color sensor), "saturated" in bit 2,
 an error flag in bit 3 and "stale" in bit 4.
 
 This driver talks to the FloorPro directly as a ``PUPDevice``, so no other code
@@ -25,7 +25,7 @@ except ImportError:  # pragma: no cover
 
 
 def _distance_heuristic(m, c):
-    """Pybricks' matcher for idealized candidates (saturated colours or greys)."""
+    """Pybricks' matcher for idealized candidates (saturated colors or greys)."""
     hue_dist = abs(c.h - m.h)
     if hue_dist > 180:
         hue_dist = 360 - hue_dist
@@ -60,8 +60,8 @@ class ColorSensor(PUPDevice):
         """ColorSensor(port, ext_port=ColorSensor.EXT1)
 
         port: hub port of the FloorPro; ext_port: the extension port the
-        colour sensor is plugged into (1 or 2). Raises ValueError if that port
-        does not report a colour sensor.
+        color sensor is plugged into (1 or 2). Raises ValueError if that port
+        does not report a color sensor.
         """
         super().__init__(port)
         if ext_port not in (self.EXT1, self.EXT2):
@@ -101,7 +101,7 @@ class ColorSensor(PUPDevice):
         raw = (await self._read_mode0())[end - 5:end]
         pack = tuple(b & 0xFF for b in raw)
         if (pack[4] & self._TYPE_MASK) != self._TYPE_COLOR:
-            raise ValueError("extension port %d does not report a colour sensor" % self.ext_port)
+            raise ValueError("extension port %d does not report a color sensor" % self.ext_port)
         return pack
 
     # --- readings ------------------------------------------------------------
@@ -116,7 +116,7 @@ class ColorSensor(PUPDevice):
         return (await self.data())[3]
 
     async def hsv(self):
-        """The colour as a Color: hue 0 .. 359, saturation and value 0 .. 100."""
+        """The color as a Color: hue 0 .. 359, saturation and value 0 .. 100."""
         r, g, b = await self.rgb()
         mx = max(r, g, b)
         mn = min(r, g, b)
@@ -136,7 +136,7 @@ class ColorSensor(PUPDevice):
         return Color(int(h) % 360, s, 100 * mx // 255)
 
     async def color(self):
-        """The nearest of the detectable colours (default: red, yellow, green,
+        """The nearest of the detectable colors (default: red, yellow, green,
         blue, white, none), matched like pybricks.pupdevices.ColorSensor."""
         m = await self.hsv()
         distance = _distance_heuristic
@@ -153,13 +153,13 @@ class ColorSensor(PUPDevice):
         return best
 
     def detectable_colors(self, colors=None):
-        """Set (or, with no argument, get) the colours color() chooses from."""
+        """Set (or, with no argument, get) the colors color() chooses from."""
         if colors is None:
             return self._colors
         self._colors = tuple(colors)
 
     async def saturated(self):
-        """True while a colour channel is at full scale (reduce the light)."""
+        """True while a color channel is at full scale (reduce the light)."""
         return bool((await self.data())[4] & self._SAT_MASK)
 
     async def error(self):

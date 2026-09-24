@@ -1,9 +1,9 @@
-"""Colour readings from the sensor on the FloorPro's extension port EXT1.
+"""Color readings from the sensor on the FloorPro's extension port EXT1.
 
-Run: pybricksdev run ble demo.py   (FloorPro on Port.A, colour sensor on EXT1)
+Run: pybricksdev run ble demo.py   (FloorPro on Port.A, color sensor on EXT1)
 
-Prints red / green / blue, the colour as hue / saturation / value and the
-nearest named colour; RIGHT button cycles the illumination LED through
+Prints red / green / blue, the color as hue / saturation / value and the
+nearest named color; RIGHT button cycles the illumination LED through
 25 / 100 / 0 %.
 """
 

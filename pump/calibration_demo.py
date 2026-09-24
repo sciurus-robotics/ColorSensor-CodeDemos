@@ -1,6 +1,6 @@
-"""Calibrate the colour sensor on extension port EXT1 from the PeakHub.
+"""Calibrate the color sensor on extension port EXT1 from the PeakHub.
 
-Run: scirodev run ble calibration_demo.py   (FloorPro on Port.A, colour sensor on EXT1)
+Run: scirodev run ble calibration_demo.py   (FloorPro on Port.A, color sensor on EXT1)
 
 The calibration is a range sweep on the device, like the FloorPro's IR array:
 while it runs, show the sensor the darkest and the brightest surfaces (or all

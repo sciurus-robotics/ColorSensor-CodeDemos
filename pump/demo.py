@@ -1,9 +1,9 @@
-"""Colour readings from the sensor on extension port EXT1 of the FloorPro.
+"""Color readings from the sensor on extension port EXT1 of the FloorPro.
 
-Run: scirodev run ble demo.py   (FloorPro on Port.A, colour sensor on EXT1)
+Run: scirodev run ble demo.py   (FloorPro on Port.A, color sensor on EXT1)
 
-Prints the raw red / green / blue / clear readings, the colour as hue /
-saturation / value and the nearest named colour. RIGHT button cycles the
+Prints the raw red / green / blue / clear readings, the color as hue /
+saturation / value and the nearest named color. RIGHT button cycles the
 illumination LED through 25 / 100 / 0 %.
 """
 
