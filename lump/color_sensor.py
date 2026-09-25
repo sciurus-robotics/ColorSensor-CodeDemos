@@ -25,7 +25,7 @@ except ImportError:  # pragma: no cover
 
 
 def _distance_heuristic(m, c):
-    """Pybricks' matcher for idealized candidates (saturated colors or greys)."""
+    """Pybricks' matcher for idealized candidates (saturated colors or grays)."""
     hue_dist = abs(c.h - m.h)
     if hue_dist > 180:
         hue_dist = 360 - hue_dist
