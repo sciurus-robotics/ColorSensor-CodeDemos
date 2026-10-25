@@ -6,7 +6,11 @@ one 5-byte pack per port (bytes 6..10 for EXT1, 11..15 for EXT2), each
 ``[data:4][status:1]``. For the color sensor the data bytes are red, green,
 blue scaled to 8 bit and the illumination LED level in percent; the status byte
 carries the sensor type in bits 0-1 (1 = color sensor), "saturated" in bit 2,
-an error flag in bit 3 and "stale" in bit 4.
+an error flag in bit 3, "stale" in bit 4, and the state of the sensor's range
+calibration in bits 5-7 ("no calibration", "calibration not applicable",
+"calibrating"). The calibration itself is recorded over PUMP; over LUMP it only
+shows in the 8-bit values, which are stretched over the calibrated range when
+one applies.
 
 This driver talks to the FloorPro directly as a ``PUPDevice``, so no other code
 is needed next to it. If your program also uses the FloorPro line-sensor driver
@@ -55,6 +59,9 @@ class ColorSensor(PUPDevice):
     _SAT_MASK = 1 << 2
     _ERR_MASK = 1 << 3
     _STALE_MASK = 1 << 4
+    _CAL_CLEAR_MASK = 1 << 5
+    _CAL_WEAK_MASK = 1 << 6
+    _CALIB_MASK = 1 << 7
 
     def __init__(self, port, ext_port=EXT1):
         """ColorSensor(port, ext_port=ColorSensor.EXT1)
@@ -165,6 +172,20 @@ class ColorSensor(PUPDevice):
     async def error(self):
         """True while the sensor reports no valid data."""
         return bool((await self.data())[4] & self._ERR_MASK)
+
+    async def calibration_status(self):
+        """State of the range calibration stored on the sensor: "none" (nothing
+        stored, values are full-scale), "weak" (stored but not applicable:
+        incomplete or recorded under other settings), "ok" (applied to rgb()),
+        or "calibrating" while one runs. Recorded over PUMP, not from here."""
+        status = (await self.data())[4]
+        if status & self._CALIB_MASK:
+            return "calibrating"
+        if status & self._CAL_CLEAR_MASK:
+            return "none"
+        if status & self._CAL_WEAK_MASK:
+            return "weak"
+        return "ok"
 
     # --- commands ------------------------------------------------------------
 

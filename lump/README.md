@@ -2,15 +2,16 @@
 
 Driver and demo for the color sensor plugged into an extension port of a
 FloorPro that is connected to a LEGO Prime / Inventor hub running
-[Pybricks](https://pybricks.com). The FloorPro speaks LEGO's UART sensor
-protocol (LUMP) there and reports the color inside its own sensor message,
+[Pybricks](https://pybricks.com). The FloorPro speaks the LEGO UART Message
+Protocol (LUMP) there and reports the color inside its own sensor message,
 which `color_sensor.py` decodes through `pybricks.iodevices.PUPDevice`.
 
 ## Files
 
 - `color_sensor.py` — `ColorSensor(port, ext_port)` driver: `rgb()`, `hsv()`,
   `color()`, `detectable_colors()`, `light()`, `set_light()`, `saturated()`,
-  `error()`. Self-contained; the FloorPro line-sensor driver is not needed (see
+  `error()`, `calibration_status()`. Self-contained; the FloorPro line-sensor
+  driver is not needed (see
   [FloorPro-CodeDemos](https://github.com/sciurus-robotics/FloorPro-CodeDemos)
   for that).
 - `demo.py` — Prints RGB, HSV and the nearest color; RIGHT cycles the LED
@@ -21,8 +22,15 @@ to the script).
 
 ## Notes
 
-- Over LUMP the sensor delivers red, green and blue scaled to 8 bit at fixed
-  gain and integration time, plus the LED level. Raw 16-bit readings and the
-  gain / integration settings are available over PUMP only.
+- Over LUMP the sensor delivers red, green and blue scaled to 8 bit, plus the
+  LED level. Gain and integration time are fixed at their defaults; only the
+  LED can be set from here. Raw 16-bit readings and the gain / integration
+  settings are available over PUMP only.
+- The sensor can hold a range calibration (min .. max per channel, recorded
+  over PUMP, see [`pump/`](../pump/)). When one is stored and applies to the
+  current settings, the 8-bit values are stretched over that range; otherwise
+  they are full-scale. `calibration_status()` reports which: `"ok"`, `"none"`,
+  `"weak"` (stored but not applicable) or `"calibrating"`. Calibration cannot
+  be started from a LEGO hub.
 - `hsv()` returns a `pybricks.parameters.Color`; `color()` picks the nearest of
   the detectable colors with the same matcher as `pybricks.pupdevices.ColorSensor`.

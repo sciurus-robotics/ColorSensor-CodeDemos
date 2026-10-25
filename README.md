@@ -11,7 +11,7 @@ Product information, documentation and firmware downloads: **https://sciro.ch**
 
 | Your hub | Protocol | Folder |
 |---|---|---|
-| LEGO Prime / Inventor hub with Pybricks | LUMP (LEGO UART sensor protocol) | [`lump/`](lump/) |
+| LEGO Prime / Inventor hub with Pybricks | LUMP (LEGO UART Message Protocol) | [`lump/`](lump/) |
 | PeakHub | PUMP (Power UART Multiplex Protocol) | [`pump/`](pump/) |
 
 Over LUMP the color rides inside the FloorPro's sensor message as 8-bit red,
