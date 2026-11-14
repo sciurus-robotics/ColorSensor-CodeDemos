@@ -1,24 +1,21 @@
 """ColorSensor on an extension port of a FloorPro, read over LUMP (LEGO hubs,
 Pybricks).
 
-Over LUMP the FloorPro reports its extension ports inside its mode-0 message:
-one 5-byte pack per port (bytes 6..10 for EXT1, 11..15 for EXT2), each
-``[data:4][status:1]``. For the color sensor the data bytes are red, green,
-blue scaled to 8 bit and the illumination LED level in percent; the status byte
-carries the sensor type in bits 0-1 (1 = color sensor), "saturated" in bit 2,
-an error flag in bit 3, "stale" in bit 4, and the state of the sensor's range
-calibration in bits 5-7 ("no calibration", "calibration not applicable",
-"calibrating"). The calibration itself is recorded over PUMP; over LUMP it only
-shows in the 8-bit values, which are stretched over the calibrated range when
-one applies.
+Over LUMP the FloorPro reports its extension ports inside its mode-0 (DFLT)
+message: one 5-byte pack per port (bytes 6..10 for EXT1, 11..15 for EXT2),
+each ``[data:4][status:1]``. For the color sensor the data bytes are red,
+green, blue scaled to 8 bit and the illumination LED level in percent; the
+status byte carries the sensor type in bits 0-1 (1 = color sensor),
+"saturated" in bit 2, an error flag in bit 3, "stale" in bit 4, and the state
+of the sensor's range calibration in bits 5-7. The calibration itself is
+recorded over PUMP; over LUMP it only shows in the 8-bit values.
 
-This driver talks to the FloorPro directly as a ``PUPDevice``, so no other code
-is needed next to it. If your program also uses the FloorPro line-sensor driver
-on the same port, both objects address the same device; the reads retry on the
-occasional ``OSError`` that concurrent access to one PUPDevice can raise.
+This class attaches to a ``FloorPro`` driver object (floor_pro.py from
+FloorPro-CodeDemos) and reads through it. The FloorPro must have its DFLT mode
+selected; otherwise every reading raises ``ModeError`` at once, nothing is
+sent, and the device is never switched behind the program's back.
 """
 
-from pybricks.iodevices import PUPDevice
 from pybricks.parameters import Color
 from pybricks.tools import wait
 
@@ -50,7 +47,7 @@ def _distance_bicone(a, b):
     return dx * dx + dy * dy + dz * dz
 
 
-class ColorSensor(PUPDevice):
+class ColorSensor:
     EXT1 = 1
     EXT2 = 2
 
@@ -63,44 +60,27 @@ class ColorSensor(PUPDevice):
     _CAL_WEAK_MASK = 1 << 6
     _CALIB_MASK = 1 << 7
 
-    def __init__(self, port, ext_port=EXT1):
-        """ColorSensor(port, ext_port=ColorSensor.EXT1)
+    def __init__(self, floor_pro, ext_port=EXT1):
+        """ColorSensor(floor_pro, ext_port=ColorSensor.EXT1)
 
-        port: hub port of the FloorPro; ext_port: the extension port the
-        color sensor is plugged into (1 or 2). Raises ValueError if that port
-        does not report a color sensor.
+        floor_pro: the FloorPro driver object the sensor is plugged into;
+        ext_port: its extension port (1 or 2). Readings require the FloorPro
+        to be in its DFLT mode (``await floor_pro.select(FloorPro.DFLT)``).
+        Raises ValueError if that port does not report a color sensor.
         """
-        super().__init__(port)
         if ext_port not in (self.EXT1, self.EXT2):
             raise ValueError("ext_port must be 1 or 2")
+        self.floor_pro = floor_pro
         self.ext_port = ext_port
-        self._mode0_len = self.info()["modes"][0][1]
         self._colors = (Color.RED, Color.YELLOW, Color.GREEN, Color.BLUE, Color.WHITE, Color.NONE)
 
     # --- low level ---------------------------------------------------------
 
     async def _read_mode0(self):
-        for attempt in range(10):
-            try:
-                return await self.read(0)
-            except OSError:
-                if attempt == 9:
-                    raise
-                await wait(10)
+        return await self.floor_pro.read_frame(self.floor_pro.DFLT)
 
     async def _send_cmd(self, msg):
-        data = [ord(c) for c in msg]
-        if len(data) > self._mode0_len:
-            raise ValueError("command too long")
-        data += [0] * (self._mode0_len - len(data))
-        for attempt in range(10):
-            try:
-                await self.write(0, data)
-                return
-            except OSError:
-                if attempt == 9:
-                    raise
-                await wait(10)
+        await self.floor_pro.send_cmd(msg)
 
     async def data(self):
         """The 5-byte extension pack ``(r, g, b, led, status)`` of the sensor's port."""

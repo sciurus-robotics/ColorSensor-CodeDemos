@@ -1,6 +1,7 @@
 """Color readings from the sensor on the FloorPro's extension port EXT1.
 
-Run: pybricksdev run ble demo.py   (FloorPro on Port.A, color sensor on EXT1)
+Run: pybricksdev run ble demo.py   (FloorPro on Port.A, color sensor on EXT1;
+floor_pro.py from FloorPro-CodeDemos/lump must sit next to this script)
 
 Prints red / green / blue, the color as hue / saturation / value and the
 nearest named color; RIGHT button cycles the illumination LED through
@@ -12,12 +13,15 @@ from pybricks.parameters import Button, Port
 from pybricks.tools import multitask, run_task, wait
 
 from color_sensor import ColorSensor
+from floor_pro import FloorPro
 
 hub = InventorHub()
-color_sensor = ColorSensor(Port.A, ColorSensor.EXT1)
+floor_pro = FloorPro(Port.A)
+color_sensor = ColorSensor(floor_pro, ColorSensor.EXT1)
 
 
 async def print_loop():
+    await floor_pro.select(FloorPro.DFLT)
     while True:
         r, g, b = await color_sensor.rgb()
         hsv = await color_sensor.hsv()

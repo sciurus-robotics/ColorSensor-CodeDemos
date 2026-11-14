@@ -8,12 +8,12 @@ which `color_sensor.py` decodes through `pybricks.iodevices.PUPDevice`.
 
 ## Files
 
-- `color_sensor.py` — `ColorSensor(port, ext_port)` driver: `rgb()`, `hsv()`,
+- `color_sensor.py` — `ColorSensor(floor_pro, ext_port)` driver: `rgb()`, `hsv()`,
   `color()`, `detectable_colors()`, `light()`, `set_light()`, `saturated()`,
-  `error()`, `calibration_status()`. Self-contained; the FloorPro line-sensor
-  driver is not needed (see
-  [FloorPro-CodeDemos](https://github.com/sciurus-robotics/FloorPro-CodeDemos)
-  for that).
+  `error()`, `calibration_status()`. Attaches to a `FloorPro` driver object
+  (`floor_pro.py` from
+  [FloorPro-CodeDemos](https://github.com/sciurus-robotics/FloorPro-CodeDemos),
+  copy it next to the script) and reads through it.
 - `demo.py` — Prints RGB, HSV and the nearest color; RIGHT cycles the LED
 
 Run with [`pybricksdev`](https://github.com/pybricks/pybricksdev), e.g.
@@ -21,6 +21,13 @@ Run with [`pybricksdev`](https://github.com/pybricks/pybricksdev), e.g.
 to the script).
 
 ## Notes
+
+- The FloorPro's LUMP modes are explicit: the color data lives in its `DFLT`
+  mode, so `await floor_pro.select(FloorPro.DFLT)` once before reading. If the
+  FloorPro is in another mode (for example `PD`), every reading raises
+  `ModeError` immediately instead of switching the device behind your back; a
+  program cannot read the color sensor and the PD output in one loop without
+  selecting back and forth (~40 ms per switch).
 
 - Over LUMP the sensor delivers red, green and blue scaled to 8 bit, plus the
   LED level. Gain and integration time are fixed at their defaults; only the
